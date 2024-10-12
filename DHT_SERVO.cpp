@@ -13,3 +13,14 @@
 #define DHT_SENSOR_TYPE DHT22
 DHT dht_sensor(DHT_PIN, DHT_SENSOR_TYPE); // Create  DHT sensor object
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+const char* server_url="https://smart-home-iot.angazaelimu.com/api/dht_data_insert";
+WiFiClientSecure *client = new WiFiClientSecure;
+String httpRequestData;
+int httpResponseCode;
+int humid_threshold;
+int temp_threshold;
+HTTPClient https;
+float humi  = 0;
+float tempC = 0;
+String payload;
