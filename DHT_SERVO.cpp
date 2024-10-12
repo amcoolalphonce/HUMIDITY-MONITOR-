@@ -84,3 +84,126 @@ void setup() {
 
 }
 
+void loop() {
+
+  // read sensor parameter values
+  humi  = dht_sensor.readHumidity(); // humidity
+  tempC = dht_sensor.readTemperature(); // temperature in Celsius
+
+  if(client){
+    // set secure client via root cert
+    client->setCACert(root_cacert);
+    //create an HTTPClient instance
+
+    //Initializing an HTTPS communication using the secure client
+    Serial.print("[HTTPS] begin...\n");
+    if(https.begin(*client, server_url)){
+
+      //Get the threshold value
+      String dht_data= httpGETRequest(server_url);
+
+      // decode response
+      JSONVar json_threshold=JSON.parse(dht_data);
+
+      // JSON.typeof(jsonVar) can be used to get the type of the var
+      if (JSON.typeof(json_threshold) == "undefined") {
+        Serial.println("Parsing input failed!");
+        return;
+      }
+
+      // decode server set dht threshold
+      temp_threshold=(const int)(json_threshold["temp_threshold"]);
+      humid_threshold=(const int)(json_threshold["humid_threshold"]);
+
+      // display threshod
+      Serial.println("Set temperature threshold: " + String(temp_threshold) + "\n");
+
+      // check whether the reading is successful or not
+      if ( isnan(tempC) || isnan(humi)) {
+        Serial.println("Failed to read from DHT sensor!");
+        return;
+      }
+
+      if (tempC>(temp_threshold)){// invoke fan into spin mode
+          digitalWrite(INA_PIN,LOW);
+          Serial.println("spinning");
+          digitalWrite(INB_PIN,HIGH);
+          delay(5000);
+      }else{// stop fan
+          digitalWrite(INA_PIN,LOW);
+          Serial.println("stopped");
+          digitalWrite(INB_PIN,LOW);
+      }
+
+      display.clearDisplay();  //clear display
+      //print temperature
+      display.setTextSize(1);
+      display.setCursor(0,0);
+      display.print("Temperature: ");
+      display.setTextSize(2);
+      display.setCursor(0,16);
+      display.print(tempC);
+      display.print(" ");
+      display.setTextSize(1);
+      display.cp437(true);
+      display.write(167);
+      display.setTextSize(2);
+      display.print("C");
+
+      // display humidity
+      display.setTextSize(1);
+      display.setCursor(0, 35);
+      display.print("Humidity: ");
+      display.setTextSize(2);
+      display.setCursor(0, 45);
+      display.print(humi);
+      display.print(" %");
+
+      display.display();
+    }
+    else {
+      Serial.printf("[HTTPS] Unable to connect\n");
+    }
+  }
+  else {
+    Serial.printf("[HTTPS] Unable to connect\n");
+  }
+
+  // wait a 2 seconds between readings
+  delay(2000);
+}
+
+//  GET request function
+String httpGETRequest(const char* serverName) {
+
+   // define request header format
+   https.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+   //----------------------------------------Prepare HTTP Request
+   httpRequestData="dht_sensor_API_KEY=" + String(API_KEY) + "&temperature=" + String(tempC) + "&humidity=" + String(humi) + "";
+   // Send POST request
+   httpResponseCode=https.POST(httpRequestData);
+   Serial.print("HTTP Response code: ");
+   Serial.println(httpRequestData);
+   //----------------------------------------
+
+  //----------------------------------------GET HTTP Request
+  if (httpResponseCode == 200) { //initialize payload if GET data is available
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+    payload=https.getString();
+  }
+  else {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+    Serial.print("Error code: ");
+    Serial.println(httpResponseCode);
+  }
+  // Free resources
+  https.end();
+
+  return payload;
+  //----------------------------------------
+
+}
+
