@@ -12,3 +12,4 @@
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 #define DHT_SENSOR_TYPE DHT22
 DHT dht_sensor(DHT_PIN, DHT_SENSOR_TYPE); // Create  DHT sensor object
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
