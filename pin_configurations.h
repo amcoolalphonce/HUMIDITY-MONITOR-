@@ -15,3 +15,7 @@
 #define RED_PIN 16  //A6
 #define BLUE_PIN 19  //A7
 #define GREEN_PIN 33  //A9
+
+#define LRCL_PIN 17  //LRCL
+#define BCLK_PIN 18  //BCLK
+#define DOUT_PIN 8  //DOUT
