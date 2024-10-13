@@ -10,3 +10,8 @@
 #define MQ2_PIN 34  //A8
 #define PIR_PIN 39  //D2
 #define SERVO_PIN 20 //A10
+
+
+#define RED_PIN 16  //A6
+#define BLUE_PIN 19  //A7
+#define GREEN_PIN 33  //A9
