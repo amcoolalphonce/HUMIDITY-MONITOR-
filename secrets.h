@@ -2,6 +2,12 @@
 #define PASSWORD "PASSWORD-OF-WIFI-NAME"
 #define API_KEY "GETTHISFROMTHEAPP"
 
+/*
+ * server auth CA certificate key
+ * ------DO NOT EDIT--------
+ */
+
+
 const char* root_cacert = \
 "-----BEGIN CERTIFICATE-----\n" \
 "MIIFazCCA1OgAwIBAgIRAIIQz7DSQONZRGPgu2OCiwAwDQYJKoZIhvcNAQELBQAw\n" \
