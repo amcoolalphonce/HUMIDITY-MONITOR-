@@ -19,3 +19,7 @@
 #define LRCL_PIN 17  //LRCL
 #define BCLK_PIN 18  //BCLK
 #define DOUT_PIN 8  //DOUT
+
+
+#define I2C_SCL 2  //SCL
+#define I2C_SDA 42  //SDA
